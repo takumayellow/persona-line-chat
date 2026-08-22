@@ -1,8 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
+import menheraAvatar from "./assets/menhera-avatar.svg";
+
+const AVATAR_IMAGES = { menhera: menheraAvatar };
 
 function formatTime(date) {
   return date.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" });
+}
+
+function Avatar({ persona, className }) {
+  const image = persona && AVATAR_IMAGES[persona.id];
+  if (image) {
+    return <img className={className} src={image} alt="" />;
+  }
+  return <div className={className}>{persona?.avatar || "🧔"}</div>;
 }
 
 function loadProfile() {
@@ -147,7 +158,7 @@ export default function App() {
   return (
     <div className="phone">
       <div className="header">
-        <div className="avatar">{persona?.avatar || "🧔"}</div>
+        <Avatar persona={persona} className="avatar" />
         <div className="title">{persona?.label || "おじさん"}</div>
         <button
           type="button"
@@ -178,7 +189,7 @@ export default function App() {
       <div className="messages" ref={scrollRef}>
         {messages.map((m, i) => (
           <div key={i} className={`row ${m.role}`}>
-            {m.role === "bot" && <div className="bubble-avatar">{persona?.avatar || "🧔"}</div>}
+            {m.role === "bot" && <Avatar persona={persona} className="bubble-avatar" />}
             <span className="meta">{formatTime(m.at)}</span>
             <div className="bubble">{m.text}</div>
           </div>
