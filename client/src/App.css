@@ -52,6 +52,31 @@
   color: #222;
 }
 
+.name-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: #eef3ee;
+  border-bottom: 1px solid #dde5dd;
+}
+
+.name-bar label {
+  font-size: 11px;
+  color: #667;
+  flex-shrink: 0;
+}
+
+.name-bar input {
+  flex: 1;
+  border: 1px solid #d6ddd6;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 12.5px;
+  outline: none;
+}
+
 .messages {
   flex: 1;
   overflow-y: auto;

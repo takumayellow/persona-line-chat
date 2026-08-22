@@ -5,7 +5,7 @@ import OpenAI from "openai";
 import { getPersona, listPersonas } from "./personas.js";
 
 const PORT = process.env.PORT || 3001;
-const MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
+const MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY not configured");
@@ -22,7 +22,7 @@ app.get("/api/personas", (req, res) => {
 });
 
 app.post("/api/chat", async (req, res) => {
-  const { personaId, messages } = req.body;
+  const { personaId, messages, userName } = req.body;
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: "messages is required" });
@@ -36,7 +36,10 @@ app.post("/api/chat", async (req, res) => {
   try {
     const completion = await client.chat.completions.create({
       model: MODEL,
-      messages: [{ role: "system", content: persona.systemPrompt }, ...history],
+      messages: [
+        { role: "system", content: persona.systemPrompt(typeof userName === "string" ? userName.trim() : "") },
+        ...history,
+      ],
     });
     const reply = completion.choices[0]?.message?.content?.trim() || "";
     res.json({ reply });

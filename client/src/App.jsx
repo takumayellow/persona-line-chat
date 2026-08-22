@@ -12,7 +12,12 @@ export default function App() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const [userName, setUserName] = useState(() => localStorage.getItem("userName") || "");
   const scrollRef = useRef(null);
+
+  useEffect(() => {
+    localStorage.setItem("userName", userName);
+  }, [userName]);
 
   const persona = personas.find((p) => p.id === personaId);
 
@@ -43,7 +48,7 @@ export default function App() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ personaId, messages: nextMessages }),
+        body: JSON.stringify({ personaId, messages: nextMessages, userName }),
       });
       if (!res.ok) throw new Error("request failed");
       const data = await res.json();
@@ -74,6 +79,17 @@ export default function App() {
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="name-bar">
+        <label htmlFor="userName">呼び名</label>
+        <input
+          id="userName"
+          type="text"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder="あなたの名前(未設定でもOK)"
+        />
       </div>
 
       {error && <div className="error-banner">{error}</div>}
