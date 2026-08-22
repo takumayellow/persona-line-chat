@@ -22,7 +22,7 @@ app.get("/api/personas", (req, res) => {
 });
 
 app.post("/api/chat", async (req, res) => {
-  const { personaId, messages, userName } = req.body;
+  const { personaId, messages, userName, honorific } = req.body;
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: "messages is required" });
@@ -37,7 +37,13 @@ app.post("/api/chat", async (req, res) => {
     const completion = await client.chat.completions.create({
       model: MODEL,
       messages: [
-        { role: "system", content: persona.systemPrompt(typeof userName === "string" ? userName.trim() : "") },
+        {
+          role: "system",
+          content: persona.systemPrompt(
+            typeof userName === "string" ? userName.trim() : "",
+            typeof honorific === "string" ? honorific : ""
+          ),
+        },
         ...history,
       ],
     });

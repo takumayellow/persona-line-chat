@@ -52,29 +52,91 @@
   color: #222;
 }
 
-.name-bar {
-  flex-shrink: 0;
-  display: flex;
+.profile-edit-btn {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.profile-gate {
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  background: #eef3ee;
-  border-bottom: 1px solid #dde5dd;
+  justify-content: center;
+  padding: 24px;
 }
 
-.name-bar label {
-  font-size: 11px;
-  color: #667;
-  flex-shrink: 0;
+.profile-form {
+  width: 100%;
+  max-width: 320px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 22px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.name-bar input {
-  flex: 1;
+.profile-form h1 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.profile-form p {
+  font-size: 13px;
+  color: #555;
+  margin: 0;
+}
+
+.profile-form input[type="text"] {
   border: 1px solid #d6ddd6;
-  border-radius: 12px;
-  padding: 4px 10px;
-  font-size: 12.5px;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
   outline: none;
+}
+
+.honorific-choices {
+  display: flex;
+  gap: 8px;
+}
+
+.honorific-choices label {
+  flex: 1;
+  text-align: center;
+  border: 1px solid #d6ddd6;
+  border-radius: 10px;
+  padding: 8px 4px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #555;
+}
+
+.honorific-choices label.active {
+  background: #06c755;
+  border-color: #06c755;
+  color: #fff;
+  font-weight: 600;
+}
+
+.honorific-choices input {
+  display: none;
+}
+
+.profile-form button[type="submit"] {
+  border: none;
+  background: #06c755;
+  color: #fff;
+  border-radius: 10px;
+  padding: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .messages {

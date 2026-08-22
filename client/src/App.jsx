@@ -5,6 +5,55 @@ function formatTime(date) {
   return date.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" });
 }
 
+function loadProfile() {
+  try {
+    return JSON.parse(localStorage.getItem("chatProfile")) || null;
+  } catch {
+    return null;
+  }
+}
+
+function ProfileGate({ initial, onSave }) {
+  const [name, setName] = useState(initial?.name || "");
+  const [honorific, setHonorific] = useState(initial?.honorific ?? "くん");
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    onSave({ name: name.trim(), honorific });
+  }
+
+  return (
+    <div className="phone profile-gate">
+      <form className="profile-form" onSubmit={handleSubmit}>
+        <h1>はじめに</h1>
+        <p>相手があなたを呼ぶときの名前を教えてください。</p>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="例: たくま"
+          autoFocus
+        />
+        <div className="honorific-choices">
+          {["くん", "ちゃん", "呼び捨て"].map((h) => (
+            <label key={h} className={honorific === h ? "active" : ""}>
+              <input
+                type="radio"
+                name="honorific"
+                value={h}
+                checked={honorific === h}
+                onChange={() => setHonorific(h)}
+              />
+              {h}
+            </label>
+          ))}
+        </div>
+        <button type="submit">はじめる</button>
+      </form>
+    </div>
+  );
+}
+
 export default function App() {
   const [personas, setPersonas] = useState([]);
   const [personaId, setPersonaId] = useState("ojisan");
@@ -12,20 +61,46 @@ export default function App() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
-  const [userName, setUserName] = useState(() => localStorage.getItem("userName") || "");
+  const [profile, setProfile] = useState(loadProfile);
+  const [editingProfile, setEditingProfile] = useState(false);
   const scrollRef = useRef(null);
 
-  useEffect(() => {
-    localStorage.setItem("userName", userName);
-  }, [userName]);
+  function saveProfile(next) {
+    setProfile(next);
+    setEditingProfile(false);
+    localStorage.setItem("chatProfile", JSON.stringify(next));
+  }
 
   const persona = personas.find((p) => p.id === personaId);
 
   useEffect(() => {
-    fetch("/api/personas")
-      .then((r) => r.json())
-      .then(setPersonas)
-      .catch(() => setError("ペルソナ一覧の取得に失敗しました"));
+    let cancelled = false;
+
+    function attempt(retriesLeft) {
+      fetch("/api/personas")
+        .then((r) => {
+          if (!r.ok) throw new Error("bad status");
+          return r.json();
+        })
+        .then((data) => {
+          if (cancelled) return;
+          setPersonas(data);
+          setError("");
+        })
+        .catch(() => {
+          if (cancelled) return;
+          if (retriesLeft > 0) {
+            setTimeout(() => attempt(retriesLeft - 1), 1000);
+          } else {
+            setError("ペルソナ一覧の取得に失敗しました");
+          }
+        });
+    }
+
+    attempt(5);
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -48,7 +123,12 @@ export default function App() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ personaId, messages: nextMessages, userName }),
+        body: JSON.stringify({
+          personaId,
+          messages: nextMessages,
+          userName: profile?.name || "",
+          honorific: profile?.honorific || "",
+        }),
       });
       if (!res.ok) throw new Error("request failed");
       const data = await res.json();
@@ -60,11 +140,23 @@ export default function App() {
     }
   }
 
+  if (!profile || editingProfile) {
+    return <ProfileGate initial={profile} onSave={saveProfile} />;
+  }
+
   return (
     <div className="phone">
       <div className="header">
         <div className="avatar">{persona?.avatar || "🧔"}</div>
         <div className="title">{persona?.label || "おじさん"}</div>
+        <button
+          type="button"
+          className="profile-edit-btn"
+          onClick={() => setEditingProfile(true)}
+          title="呼び名を変更"
+        >
+          {profile.name || "名前未設定"}
+        </button>
         <select
           className="persona-select"
           value={personaId}
@@ -79,17 +171,6 @@ export default function App() {
             </option>
           ))}
         </select>
-      </div>
-
-      <div className="name-bar">
-        <label htmlFor="userName">呼び名</label>
-        <input
-          id="userName"
-          type="text"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          placeholder="あなたの名前(未設定でもOK)"
-        />
       </div>
 
       {error && <div className="error-banner">{error}</div>}
