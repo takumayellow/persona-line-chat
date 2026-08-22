@@ -42,7 +42,7 @@ function ProfileGate({ initial, onSave }) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="例: たぬき次郎"
+          placeholder="名前"
           autoFocus
         />
         <div className="honorific-choices">
