@@ -33,6 +33,11 @@
   overflow: hidden;
 }
 
+.header .avatar:has(img),
+.bubble-avatar:has(img) {
+  background: #fbdce9;
+}
+
 .avatar img,
 .bubble-avatar img {
   width: 100%;
