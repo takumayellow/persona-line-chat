@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
-import menheraAvatar from "./assets/menhera-avatar.svg";
+import menheraAvatar from "./assets/menhera-avatar.png";
 
 const AVATAR_IMAGES = { menhera: menheraAvatar };
 
