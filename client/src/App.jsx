@@ -4,6 +4,18 @@ import menheraAvatar from "./assets/menhera-avatar.png";
 
 const AVATAR_IMAGES = { menhera: menheraAvatar };
 
+/**
+ * サーバーへ送る会話の長さ。サーバー側の刈り込み（`server/app.js`）と同じ値にしてある。
+ *
+ * 画面には会話が全部残るが、**送るのは直近ぶんだけ**にする。
+ * 全部送っていると、会話が伸びるほど本文が大きくなり、いずれサーバーの
+ * 本文上限（32kb）に当たって、その会話が二度と送れなくなる。
+ */
+const MAX_HISTORY_MESSAGES = 20;
+
+/** 1発言の長さ。これ以上はサーバーが捨てるので、送る前に切る。 */
+const MAX_MESSAGE_CHARS = 500;
+
 function formatTime(date) {
   return date.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" });
 }
@@ -120,7 +132,7 @@ export default function App() {
 
   async function handleSend(e) {
     e.preventDefault();
-    const text = input.trim();
+    const text = input.trim().slice(0, MAX_MESSAGE_CHARS);
     if (!text || sending) return;
 
     const userMessage = { role: "user", text, at: new Date() };
@@ -136,7 +148,10 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           personaId,
-          messages: nextMessages,
+          messages: nextMessages.slice(-MAX_HISTORY_MESSAGES).map((m) => ({
+            role: m.role,
+            text: m.text.slice(0, MAX_MESSAGE_CHARS),
+          })),
           userName: profile?.name || "",
           honorific: profile?.honorific || "",
         }),
@@ -211,6 +226,7 @@ export default function App() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          maxLength={MAX_MESSAGE_CHARS}
           placeholder="メッセージを入力"
         />
         <button type="submit" disabled={sending || !input.trim()}>
