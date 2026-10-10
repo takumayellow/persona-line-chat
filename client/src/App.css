@@ -33,17 +33,9 @@
   overflow: hidden;
 }
 
-.header .avatar:has(img),
-.bubble-avatar:has(img) {
-  background: #fbdce9;
-}
-
-.avatar img,
-.bubble-avatar img {
-  width: 100%;
-  height: 100%;
+img.avatar,
+img.bubble-avatar {
   object-fit: cover;
-  border-radius: 50%;
 }
 
 .header .title {
