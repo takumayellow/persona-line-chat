@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import menheraAvatar from "./assets/menhera-avatar.png";
+import ojisanAvatar from "./assets/ojisan-avatar.png";
 
-const AVATAR_IMAGES = { menhera: menheraAvatar };
+const AVATAR_IMAGES = { ojisan: ojisanAvatar, menhera: menheraAvatar };
 
 /**
  * サーバーへ送る会話の長さ。サーバー側の刈り込み（`server/app.js`）と同じ値にしてある。
@@ -211,7 +212,7 @@ export default function App() {
         ))}
         {sending && (
           <div className="row bot typing">
-            <div className="bubble-avatar">{persona?.avatar || "🧔"}</div>
+            <Avatar persona={persona} className="bubble-avatar" />
             <div className="bubble">
               <span className="dot" />
               <span className="dot" />
