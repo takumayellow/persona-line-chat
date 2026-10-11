@@ -10,7 +10,7 @@ LINE風のUIで、キャラクターペルソナ(おじさん / メンヘラ)と
 - LINEそっくりのチャット画面(吹き出し・既定色・タイピング中インジケータ)
 - ペルソナ切り替え(おじさん構文 / メンヘラ構文)。ヘッダー右上のセレクトで即切り替え
 - 会話開始前のオンボーディング(名前 + くん/ちゃん/呼び捨て)。以後、ペルソナはその名前で呼びかける
-- 各ペルソナ専用のアイコン([いらすとや](https://www.irasutoya.com/)のイラストを使用。おじさんは[おじさんの顔のアイコン](https://www.irasutoya.com/2013/10/blog-post_872.html)、メンヘラは[地雷メイク](https://www.irasutoya.com/2020/06/blog-post_133.html))
+- 各ペルソナ専用のアイコン([いらすとや](https://www.irasutoya.com/)のイラストを使用。おじさんは[てへぺろのイラスト（おじさん）](https://www.irasutoya.com/2015/11/blog-post_161.html)、メンヘラは[地雷メイク](https://www.irasutoya.com/2020/06/blog-post_133.html))
 
 ## 仕組み
 
